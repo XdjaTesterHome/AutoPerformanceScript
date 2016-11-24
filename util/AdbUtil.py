@@ -1,9 +1,10 @@
 #!/usr/bin/env python      
 # -*- coding: utf-8 -*-
-import os
-
 __author__ = 'zhouliwei'
 
+import os,re,time
+import subprocess
+PATH = lambda p: os.path.abspath(p)
 """
 function: 处理和adb命令相关的工具类
 date:2016/11/23
@@ -60,6 +61,42 @@ class AdbUtil(object):
             return True
         else:
             return False
+
+    """
+        接收cmd命令输出的结果，lzz
+    """
+    def exccmd(cmd):
+        try:
+            return os.popen(cmd).read()
+        except Exception:
+            return None
+    """
+        检查设备是否连接，并返回设备ID，用于后期执行多线程操作，同时操作多台设备。
+    """
+    def finddevices():
+        rst = AdbUtil.exccmd('adb devices')
+        devices = re.findall(r'(.*?)\s+device',rst)
+        if len(devices) > 1:
+            deviceIds = devices[1:]
+            print ('共找到%s个手机'%str(len(devices)-1))
+            for i in deviceIds:
+                print ('设备ID为%s'%i)
+            return deviceIds
+        else:
+            print('没有找到手机，请检查')
+            return
+    """
+       获取手机屏幕截屏
+    """
+    def screenshot():
+        path = PATH(os.getcwd() + "/screenshot")
+        timestamp = time.strftime('%Y-%m-%d-%H-%M-%S',time.localtime(time.time()))
+        os.popen("adb wait-for-device")
+        os.popen("adb shell screencap -p /data/local/tmp/tmp.png")
+        if not os.path.isdir(PATH(os.getcwd() + "/screenshot")):
+            os.makedirs(path)
+        os.popen("adb pull /data/local/tmp/tmp.png " + PATH(path + "/" + timestamp + ".png"))
+        os.popen("adb shell rm /data/local/tmp/tmp.png")
 
     """
        卸载apk

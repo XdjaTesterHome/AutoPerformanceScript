@@ -1,0 +1,6 @@
+eclipse.preferences.version=1
+encoding//controller/GetCpuDataThread.py=utf-8
+encoding//controller/GetFlowThread.py=utf-8
+encoding//controller/GetMemoryThread.py=utf-8
+encoding//util/AdbUtil.py=utf-8
+encoding//util/AndroidUtil.py=utf-8
