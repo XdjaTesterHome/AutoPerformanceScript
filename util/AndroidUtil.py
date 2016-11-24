@@ -5,16 +5,12 @@ __author__ = 'zhouliwei'
 from AdbUtil import AdbUtil
 from LogUtil import LogUtil as log
 
-import time
-import re
-import subprocess
-
 """
 function: 用于操作Android相关的方法类
 date:2016/11/22
 
 """
-import os,time,re
+import os,time
 import subprocess,re
 
 class AndroidUtil(object):
@@ -227,11 +223,11 @@ class AndroidUtil(object):
                     tx_bytes = item.split()[7]
                     list_rx.append(int(rx_bytes))
                     list_tx.append(int(tx_bytes))
-                float_total_net_traffic = (sum(list_rx) + sum(list_tx)) / 1024.0 / 1024.0
+                float_total_net_traffic = (sum(list_rx) + sum(list_tx)) / 1024.0
                 float_total_net_traffic = round(float_total_net_traffic, 4)
                 return sum(list_rx), sum(list_tx), float_total_net_traffic
             except Exception, e:
-                log.log_e('cannot get flow from /proc/net/xt_qtaguid/stats' + e)
+                log.log_e('cannot get flow from /proc/net/xt_qtaguid/stats' + e.message)
         else:
             try:
                 cmd_snd = 'cat /proc/uid_stat/%s/tcp_snd' % uid
@@ -243,14 +239,24 @@ class AndroidUtil(object):
                     float_total_net_traffic = round(float_total_net_traffic, 4)
                     return int(str_totalRxBytes), int(str_totalTxBytes), float_total_net_traffic
             except Exception as e:
-                log.log_e('cannot get flow from /proc/uid_stat/tcp_snd  or tcp_rcv' + e)
+                log.log_e('cannot get flow from /proc/uid_stat/tcp_snd  or tcp_rcv' + e.message)
 
         return 0, 0, 0
 
+    """
+     获取当前Activity的名称
+    """
+    @staticmethod
+    def get_cur_activity():
+        try:
+            cmd = 'dumpsys activity | findStr mFocusedActivity'
+            result = AdbUtil.exec_adb_shell(cmd)
+            result_trs = result.split()
+            return result_trs[len(result_trs) - 2]
+        except Exception,e:
+            log.log_e('get current activity failure' + e.message)
+            return ''
 
 if __name__ == '__main__':
 
-    for i in range(20):
-        time.sleep(1)
-        print AndroidUtil.get_fps_data_by_gfxinfo('com.tencent.mm')
-        i += 1
+    print AndroidUtil.get_cur_activity()
