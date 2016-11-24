@@ -27,30 +27,30 @@ class AndroidUtil(object):
 
     def get_cpu_data(self):
         #getCurrentPID:获取当前应用包名和Pid#
-        def getCurrentPID(self):
+        def getCurrentPID():
             _result = os.popen('adb shell dumpsys activity top | findstr ACTIVITY').read().strip()
             _resultPid = re.findall(u'pid=(\d+)', _result)[0]
             _resultPName = re.findall(u'(com.\w+.\w+)',_result)[0]
             return [_resultPid,_resultPName]
         #getTotalCpuTime获取总jiffies数据#
-        def getTotalCpuTime(self):
+        def getTotalCpuTime():
             _result = os.popen('adb shell cat /proc/stat').read().strip()
             _result = _result.split('\n')[0]
             _result = re.findall(u'(\d+)', _result)
             _result = reduce(lambda x,y:int(x) + int(y), _result)
             return _result
         #获取应用占用的总jiffies数据#pid:为应用进程pid
-        def getPIDCpuTime(self,pid):
+        def getPIDCpuTime(pid):
             _result = os.popen('adb shell cat /proc/%s/stat'%pid).read().strip()
             _result = re.findall(u'(\d+)', _result)
             _result = reduce(lambda x,y:x+y, [int(_result[11]),int(_result[12]),int(_result[13]),int(_result[14])]);
             return _result
-        pid,pName = self.getCurrentPID()
-        _start0 = self.getTotalCpuTime()
-        _start1 = self.getPIDCpuTime(pid)
+        pid,pName = getCurrentPID()
+        _start0 = getTotalCpuTime()
+        _start1 = getPIDCpuTime(pid)
         time.sleep(1)
-        _end0 = self.getTotalCpuTime()
-        _end1 = self.getPIDCpuTime(pid)
+        _end0 = getTotalCpuTime()
+        _end1 = getPIDCpuTime(pid)
         cpuUsage = float((_end1-_start1))/(_end0-_start0)*100#计算当前用户进程CPU的值
         CPU=(float('%.2f'%cpuUsage))#当前被监控应用CPU的值
         return CPU
@@ -62,7 +62,7 @@ class AndroidUtil(object):
 
     def get_memory_data(self):
         #getCurrentPID:获取当前应用包名和Pid#
-        def getCurrentPID(self):
+        def getCurrentPID():
             _result = os.popen('adb shell dumpsys activity top | findstr ACTIVITY').read().strip()
             _resultPid = re.findall(u'pid=(\d+)', _result)[0]
             _resultPName = re.findall(u'(com.\w+.\w+)',_result)[0]
@@ -83,7 +83,7 @@ class AndroidUtil(object):
             finally:
                 pass
             return allocMemory
-        pid,pName = self.getCurrentPID()
+        pid,pName = getCurrentPID()
         allocMemory=readMemory(pName)
         return allocMemory
         pass
@@ -192,6 +192,10 @@ class AndroidUtil(object):
     """
 
     def get_battery_data(self):
+        pass
+
+    def test(self):
+        print "这是一段调试代码，用于调试！！！"
         pass
 
     """
