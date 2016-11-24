@@ -1,9 +1,9 @@
 #!/usr/bin/env python      
 # -*- coding: utf-8 -*-
+import os
+
 __author__ = 'zhouliwei'
 
-import os
-import subprocess
 """
 function: 处理和adb命令相关的工具类
 date:2016/11/23
@@ -22,7 +22,7 @@ class AdbUtil(object):
     @staticmethod
     def exec_adb(commands):
         command_result = ''
-        cmd = 'adb shell %s' % commands
+        cmd = 'adb %s' % commands
         results = os.popen(cmd, "r")
         while 1:
             line = results.readline()
@@ -118,4 +118,4 @@ class AdbUtil(object):
 
 
 if __name__ == '__main__':
-    print  AdbUtil.get_uid('com.tencent.mm')
+    pass
