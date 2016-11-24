@@ -26,7 +26,7 @@ class GetFpsDataThread(threading.Thread):
     def __init__(self, package_name):
         threading.Thread.__init__(self)
         self.package_name = package_name
-
+        self.pic_name = 'fps'
         # 每次采集数据前，先清理上次的数据
         GetFpsDataThread.clear_data()
 
@@ -34,13 +34,12 @@ class GetFpsDataThread(threading.Thread):
         采集数据的逻辑
     """
     def run(self):
+        # 处理可能有问题的场景
         def handle_error_data(frame_count, jank_count, fps, current_page):
             # 暂时当fps < 50 或者 jank_count > 10 我们认为是不达标的
             if fps < 50 or jank_count > 10:
                 # 截图
-                timestamp = time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime(time.time()))
-                pic_name = 'fps' + timestamp
-                AdbUtil.screenshot(pic_name)
+                AdbUtil.screenshot(self.pic_name)
                 # 保存日志
 
                 GetFpsDataThread.fps_error_datas.append([frame_count, jank_count, fps, current_page, pic_name])

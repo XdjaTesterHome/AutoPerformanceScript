@@ -3,6 +3,7 @@
 import threading
 import common.GlobalConfig as config
 from util.AndroidUtil import AndroidUtil
+from util.AdbUtil import AdbUtil
 import time
 
 __author__ = 'zhouliwei'
@@ -25,11 +26,14 @@ class GetFlowDataThread(threading.Thread):
     # 当前时间段的流量值
     current_flow_data = 0
 
+    # 用于存放采集到的有问题的流量数据
+    flow_error_datas = [['flow_data', 'current_page', 'pic_name']]
+
     def __init__(self, thread_id, package_name):
         threading.Thread.__init__(self)
         self.threadId = thread_id
         self.package_name = package_name
-
+        self.pic_name = 'flow'
         # 每次开启线程，清理上次的数据
         GetFlowDataThread.clear_data()
 
@@ -37,6 +41,13 @@ class GetFlowDataThread(threading.Thread):
         用于采集流量数据
     """
     def run(self):
+        # 处理有问题的流量数据，暂定有问题的流量是大于1M时
+        def handle_error_data(current_flow):
+            if current_flow > 1 * 1024:
+                current_page = AndroidUtil.get_cur_activity()
+                AdbUtil.screenshot(self.pic_name)
+                GetFlowDataThread.flow_error_datas.append([current_flow, current_page, self.pic_name])
+
         # 死循环，满足条件后跳出
         exec_count = 0
         while True:
@@ -50,6 +61,7 @@ class GetFlowDataThread(threading.Thread):
             if exec_count > 0:
                 self.current_flow_data = flow_total - self.last_flow_data
                 GetFlowDataThread.flow_datas.append(self.current_flow_data)
+                handle_error_data(self.current_flow_data)
 
             exec_count += 1
             self.last_flow_data = flow_total
@@ -64,6 +76,7 @@ class GetFlowDataThread(threading.Thread):
     @staticmethod
     def clear_data():
         GetFlowDataThread.flow_datas = []
+        GetFlowDataThread.flow_error_datas = [['flow_data', 'current_page', 'pic_name']]
 
 if __name__ == '__main__':
     for i in (0,1):

@@ -253,8 +253,11 @@ class AndroidUtil(object):
         try:
             cmd = 'dumpsys activity | findStr mFocusedActivity'
             result = AdbUtil.exec_adb_shell(cmd)
+            if result is None or result == '':
+                return 'unknow'
             result_trs = result.split()
-            return result_trs[len(result_trs) - 2]
+            activity_name = result_trs[len(result_trs) - 2].split('/')[1]
+            return activity_name
         except Exception,e:
             log.log_e('get current activity failure' + e.message)
             return ''

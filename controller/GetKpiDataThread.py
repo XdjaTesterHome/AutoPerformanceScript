@@ -3,9 +3,9 @@
 import threading
 import time
 import subprocess
-import re
 import common.GlobalConfig as config
 from util.LogUtil import LogUtil as log
+from util.AdbUtil import AdbUtil
 
 __author__ = 'zhouliwei'
 
@@ -21,6 +21,9 @@ class GetKpiDataThread(threading.Thread):
     # 用于收集kpi的数据
     kpi_datas = [['now_page', 'jump_page', 'cost_time']]
 
+    # 用于收集kpi异常的数据
+    kpi_error_datas = [['now_page', 'jump_page', 'cost_time', 'pic_name']]
+
     # 当前页面名称
     now_page_name = ''
 
@@ -34,12 +37,29 @@ class GetKpiDataThread(threading.Thread):
         threading.Thread.__init__(self)
         self.threadID = thread_id
         self.package_name = package_name
+        self.pic_name = 'kpi'
 
     """
         循环获取kpi数据的逻辑
     """
 
     def run(self):
+        # 处理异常的kpi数据,当跳转时间大于3s（暂定）
+        def handle_error_data():
+            cost_time_value = handle_cost_time(self.cost_time)
+            if cost_time_value > 3000:
+                AdbUtil.screenshot(self.pic_name)
+                GetKpiDataThread.kpi_error_datas.append([self.now_page_name, self.jump_page, self.cost_time, self.pic_name])
+
+        # 因为从日志中得到的值都是 +345ms 或者 +1s234ms
+        def handle_cost_time(cost_time):
+            s_result = re.findall(r'\ds', cost_time)
+            ms_result = re.findall(r'\d\d\dms', cost_time)
+
+            s_data = int(s_result[0].split('s')[0]) * 1000
+            ms_data = int(ms_result[0].split('ms')[0])
+            return s_data + ms_data
+
         # 记录起始时间
         global results
         start_time = time.mktime(time.localtime())
@@ -87,6 +107,8 @@ class GetKpiDataThread(threading.Thread):
             # 将结果保存到数组中
             if self.now_page_name is not None and self.jump_page is not None and self.cost_time is not None:
                 GetKpiDataThread.kpi_datas.append([self.now_page_name, self.jump_page, self.cost_time])
+                handle_error_data()
+
         print GetKpiDataThread.kpi_datas
 
     """
@@ -95,7 +117,18 @@ class GetKpiDataThread(threading.Thread):
     @staticmethod
     def clear_data():
         GetKpiDataThread.kpi_datas = ['now_page', 'jump_page', 'cost_time']
+        GetKpiDataThread.kpi_error_datas = [['now_page', 'jump_page', 'cost_time', 'pic_name']]
 
 
 if __name__ == '__main__':
-    GetKpiDataThread(101, 'com.xdja.safekeyservice').start()
+    # GetKpiDataThread(101, 'com.xdja.safekeyservice').start()
+
+    import re
+    str = '+1s435ms'
+    s_result = re.findall(r'\ds', str)
+    ms_result  = re.findall(r'\d\d\dms', str)
+
+    s_data = int(s_result[0].split('s')[0]) * 1000
+    ms_data = int(ms_result[0].split('ms')[0])
+    print s_data
+    print ms_data

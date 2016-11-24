@@ -98,8 +98,11 @@ class AdbUtil(object):
     """
        获取手机屏幕截屏
     """
-    def screenshot(self, pic_name):
+    @staticmethod
+    def screenshot(pic_name):
         path = PATH(os.getcwd() + "/screenshot")
+        timestamp = time.strftime('%Y-%m-%d-%H-%M-%S', time.localtime(time.time()))
+        pic_name  = pic_name + '_' + timestamp
         os.popen("adb wait-for-device")
         os.popen("adb shell screencap -p /data/local/tmp/tmp.png")
         if not os.path.isdir(PATH(os.getcwd() + "/screenshot")):

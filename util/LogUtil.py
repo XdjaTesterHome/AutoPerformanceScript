@@ -36,9 +36,9 @@ class LogUtil(object):
     @staticmethod
     def log_e(error):
         if config.log_switch:
-            file_path = common.get_upper_path() + "\\log"
-            if not os.path.exists(file_path):
-                os.makedirs(file_path)
+            # file_path = common.get_upper_path() + "\\log"
+            # if not os.path.exists(file_path):
+            #     os.makedirs(file_path)
             logging.basicConfig(level=logging.DEBUG,
                                 format='%(asctime)s %(filename)s[line:%(lineno)d] %(levelname)s %(message)s',
                                 datefmt='%a, %d %b %Y %H:%M:%S',
