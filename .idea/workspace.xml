@@ -557,6 +557,14 @@
       <option name="presentableId" value="Default" />
       <updated>1479799194160</updated>
     </task>
+    <task id="LOCAL-00001" summary="提交获取kpitest的信息">
+      <created>1479956003021</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1479956003021</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -594,6 +602,10 @@
   </component>
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="提交获取kpitest的信息" />
+    <option name="LAST_COMMIT_MESSAGE" value="提交获取kpitest的信息" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
