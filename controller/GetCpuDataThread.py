@@ -45,7 +45,7 @@ class GetCpuDataThread(threading.Thread):
     
 if __name__ == '__main__':
     res = GetCpuDataThread(1)
-    print res.start()
+    res.start()
     res.join()#子线程执行完毕，才能执行主线程
     print res.CPUdata, res.CPUerror  #这个就是主线程
 

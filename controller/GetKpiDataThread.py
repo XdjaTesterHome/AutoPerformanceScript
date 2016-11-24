@@ -98,4 +98,4 @@ class GetKpiDataThread(threading.Thread):
 
 
 if __name__ == '__main__':
-    GetKpiDataThread(101, 'com.tencent.mm').start()
+    GetKpiDataThread(101, 'com.xdja.safekeyservice').start()

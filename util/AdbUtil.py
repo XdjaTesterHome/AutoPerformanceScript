@@ -17,8 +17,18 @@ class AdbUtil(object):
         pass
 
     """
-        执行adb命令
+        执行adb命令,执行完整的adb命令，如adb devices
     """
+
+    def exadb(self,commands):
+        command_result = ''
+        results = os.popen(commands, "r")
+        while 1:
+            line = results.readline()
+            if not line: break
+            command_result += line
+        results.close()
+        return command_result
 
     @staticmethod
     def exec_adb(commands):

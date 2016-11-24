@@ -66,7 +66,9 @@ class GetFlowDataThread(threading.Thread):
         GetFlowDataThread.flow_datas = []
 
 if __name__ == '__main__':
-    GetFlowDataThread(102, 'com.tencent.mm').start()
+    for i in (0,1):
+        GetFlowDataThread(102, 'com.xdja.safekeyservice').start()
+
 
 
 

@@ -29,6 +29,7 @@ class AndroidUtil(object):
             _resultPName = re.findall(u'(com.\w+.\w+)',_result)[0]
             return [_resultPid,_resultPName]
         #getTotalCpuTime获取总jiffies数据#
+
         def getTotalCpuTime():
             _result = os.popen('adb shell cat /proc/stat').read().strip()
             _result = _result.split('\n')[0]
@@ -36,6 +37,7 @@ class AndroidUtil(object):
             _result = reduce(lambda x,y:int(x) + int(y), _result)
             return _result
         #获取应用占用的总jiffies数据#pid:为应用进程pid
+
         def getPIDCpuTime(pid):
             _result = os.popen('adb shell cat /proc/%s/stat'%pid).read().strip()
             _result = re.findall(u'(\d+)', _result)
