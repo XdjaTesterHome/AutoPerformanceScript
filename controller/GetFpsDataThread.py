@@ -55,4 +55,4 @@ class GetFpsDataThread(threading.Thread):
         GetFpsDataThread.fps_datas = [['frame_count', 'jank_count', 'fps', 'page']]
 
 if __name__ == '__main__':
-    GetFpsDataThread('com.tencent.mm').start()
+    GetFpsDataThread('com.xdja.safekeyservice').start()

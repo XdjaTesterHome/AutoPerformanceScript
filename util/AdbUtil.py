@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 __author__ = 'zhouliwei'
 
-import os,re,time
+import os, re, time
 import subprocess
 PATH = lambda p: os.path.abspath(p)
 """
@@ -88,7 +88,7 @@ class AdbUtil(object):
     """
        获取手机屏幕截屏
     """
-    def screenshot():
+    def screenshot(self):
         path = PATH(os.getcwd() + "/screenshot")
         timestamp = time.strftime('%Y-%m-%d-%H-%M-%S',time.localtime(time.time()))
         os.popen("adb wait-for-device")
