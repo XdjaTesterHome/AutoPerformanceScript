@@ -19,3 +19,6 @@ collect_data_count = 60
 
 # 采集数据的时间间隔
 collect_data_interval = collect_data_count / collect_data_time
+
+# 要测试的App的包名
+test_package_name = 'com.xdja.safekeyservice'

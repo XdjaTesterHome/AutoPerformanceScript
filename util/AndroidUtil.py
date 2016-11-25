@@ -251,14 +251,33 @@ class AndroidUtil(object):
     @staticmethod
     def get_cur_activity():
         try:
-            cmd = 'dumpsys activity | findStr mFocusedActivity'
+            cmd = 'dumpsys activity top | findStr ACTIVITY'
             result = AdbUtil.exec_adb_shell(cmd)
             if result is None or result == '':
                 return 'unknow'
-            result_trs = result.split()
-            activity_name = result_trs[len(result_trs) - 2].split('/')[1]
+            activity_name = result.split('/')[1].strip()
+            activity_name = activity_name.split(' ')[0].strip()
             return activity_name
         except Exception,e:
+            log.log_e('get current activity failure' + e.message)
+            return ''
+
+    """
+        获取当前运行app的包名
+    """
+    @staticmethod
+    def get_cur_packagename():
+        try:
+            cmd = 'dumpsys activity top | findStr ACTIVITY'
+            result = AdbUtil.exec_adb_shell(cmd)
+            if result is None or result == '':
+                return 'unknow'
+            package_name = re.findall(r'com.\w+.\w+', result, re.M)
+            package_name = package_name[0].strip()
+            # result_trs = result.split()
+            # activity_name = result_trs[len(result_trs) - 2].split('/')[1]
+            return package_name
+        except Exception, e:
             log.log_e('get current activity failure' + e.message)
             return ''
 
