@@ -92,7 +92,7 @@ class AdbUtil(object):
     """
         检查设备是否连接，并返回设备ID，用于后期执行多线程操作，同时操作多台设备。
     """
-    def finddevices():
+    def finddevices(self):
         rst = AdbUtil.exccmd('adb devices')
         devices = re.findall(r'(.*?)\s+device',rst)
         if len(devices) > 1:
@@ -142,7 +142,7 @@ class AdbUtil(object):
             return False
 
     #获取当前应用pid和包名#
-    def getCurrentPID():
+    def getCurrentPID(self):
         _result = os.popen('adb shell dumpsys activity top | findstr ACTIVITY').read().strip()
         _resultPid = re.findall(u'pid=(\d+)', _result)[0]
         _resultPName = re.findall(u'(com.\w+.\w+)',_result)[0]

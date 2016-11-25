@@ -1,15 +1,22 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-__author__ = 'lzz'
 from util import AdbUtil
-mokeyrun = AdbUtil.AdbUtil()
-class Monkey():
-    def __init__(self):
-        pass
-#runmonkey,time为测试monkey时长，pkg为测试包#
-    def runmonkey(self,time,pkg):
-        cmd_Memory = "adb shell monkey -p "+ pkg +" --throttle 500 --ignore-crashes --ignore-timeouts --ignore-native-crashes -v -v -v %s"%(time)
-        mokeyrun.exadb(cmd_Memory)
-        pass
-if __name__== "__main__":
-    Monkey().runmonkey(100,"com.xdja.safekeyservice")
+__author__ = 'lzz'
+
+monkey_run = AdbUtil.AdbUtil()
+
+"""
+    用于跑monkey
+"""
+
+
+class Monkey(object):
+
+    # run monkey,time为测试monkey时长，pkg为测试包
+    @staticmethod
+    def run_monkey(time, package_name):
+        cmd_memory = "adb shell monkey -p " + package_name + " --throttle 1000 --pct-appswitch 70 " + "--ignore-crashes --ignore-timeouts --ignore-native-crashes -v -v -v %s" % time
+        monkey_run.exadb(cmd_memory)
+
+if __name__ == "__main__":
+    Monkey().run_monkey(1000, "com.xdja.safekeyservice")

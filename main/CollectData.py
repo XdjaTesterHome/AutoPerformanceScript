@@ -5,7 +5,10 @@ from controller.GetFlowDataThread import GetFlowDataThread
 from controller.GetKpiDataThread import GetKpiDataThread
 from controller.GetFpsDataThread import GetFpsDataThread
 from controller.GetCpuDataThread import GetCpuDataThread
-from  controller.GetMemoryThread import GetMemoryDataThread
+from controller.GetMemoryThread import GetMemoryDataThread
+import common.GlobalConfig as config
+from util.AdbUtil import AdbUtil
+from util.AndroidUtil import AndroidUtil
 
 __author__ = 'zhouliwei'
 
@@ -24,6 +27,20 @@ class CollectData(object):
     FLOW_THREAD_ID = 104
     FPS_THREAD_ID = 105
 
+    # 记录采集到的数据
+    kpi_datas = []
+    memory_datas = []
+    cpu_datas = []
+    fps_datas = []
+    flow_datas = []
+
+    # 记录采集到的异常数据
+    kpi_error_datas = []
+    memory_error_datas = []
+    cpu_error_datas = []
+    fps_error_datas = []
+    flow_error_datas = []
+
     def __init__(self):
         pass
 
@@ -34,7 +51,7 @@ class CollectData(object):
     def auto_collect_data(self):
         try:
             # 1. 开始采集kpi数据
-            kpi_thread = GetKpiDataThread(self.KPI_THREAD_ID, 'com.tencent')
+            kpi_thread = GetKpiDataThread(self.KPI_THREAD_ID, config.test_package_name)
             kpi_thread.start()
 
             # 2. 开始采集内存数据
@@ -46,12 +63,57 @@ class CollectData(object):
             cpu_thread.start()
 
             # 4. 开始采集帧率数据
-            fps_thread = GetFpsDataThread(self.FPS_THREAD_ID)
+            fps_thread = GetFpsDataThread(self.FPS_THREAD_ID, config.test_package_name)
             fps_thread.start()
 
             # 5. 开始采集流量数据
-            flow_thread = GetFlowDataThread(self.FLOW_THREAD_ID)
+            flow_thread = GetFlowDataThread(self.FLOW_THREAD_ID, config.test_package_name)
             flow_thread.start()
 
+            # 6. 将数据记录下来
+            CollectData.record_data()
         except Exception as e:
             LogUtil.log_e('collect data failure ' + e.message)
+
+    """
+        将采集到的数据记录下来
+    """
+    @staticmethod
+    def record_data():
+        CollectData.kpi_datas = GetKpiDataThread.kpi_datas
+        CollectData.kpi_error_datas = GetKpiDataThread.kpi_error_datas
+        GetKpiDataThread.clear_data()
+
+        CollectData.cpu_datas = GetCpuDataThread.CPUdata
+        CollectData.cpu_error_datas = GetCpuDataThread.CPUerror
+
+        CollectData.memory_datas = GetMemoryDataThread.Memorydata
+        CollectData.memory_error_datas = GetMemoryDataThread.Memoryerror
+
+        CollectData.fps_datas = GetFpsDataThread.fps_datas
+        CollectData.fps_error_datas = GetFpsDataThread.fps_error_datas
+        GetFpsDataThread.clear_data()
+
+        CollectData.flow_datas = GetFlowDataThread.flow_datas
+        CollectData.flow_error_datas = GetFlowDataThread.flow_error_datas
+        GetFlowDataThread.clear_data()
+
+    """
+        判断是否符合采集数据的条件
+    """
+    @staticmethod
+    def can_collect_data(package_name):
+        # 1. 判断手机是否连接
+        mobile_connect = AdbUtil().attach_devices()
+        tips = ''
+        if not mobile_connect:
+            tips = '请连接设备，当前无设备可用'
+            return mobile_connect, tips
+
+        # 2. 判断当前进程是否还活着
+        process_alive = AndroidUtil.process_alive(package_name)
+        if not process_alive:
+            tips = 'app进程已被杀死，请打开app后再开始测试'
+            return process_alive, tips
+
+        return True, tips

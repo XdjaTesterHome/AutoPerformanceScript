@@ -1,21 +1,25 @@
 #!/usr/bin/env python      
 # -*- coding: utf-8 -*-
-__author__ = 'zhouliwei'
+import os,time
+import subprocess,re
+import traceback
 
 from AdbUtil import AdbUtil
 from LogUtil import LogUtil as log
+
+__author__ = 'zhouliwei'
+
 
 """
 function: 用于操作Android相关的方法类
 date:2016/11/22
 
 """
-import os,time
-import subprocess,re
-import AdbUtil
-adbutil = AdbUtil.AdbUtil()
+
+
 class AndroidUtil(object):
     def __init__(self):
+        adbutil = AdbUtil()
         pass
 
     """
@@ -38,7 +42,7 @@ class AndroidUtil(object):
             _result = re.findall(u'(\d+)', _result)
             _result = reduce(lambda x,y:x+y, [int(_result[11]),int(_result[12]),int(_result[13]),int(_result[14])]);
             return _result
-        pid= adbutil.get_pid(package)
+        pid= self.adbutil.get_pid(package)
         _start0 = getTotalCpuTime()
         _start1 = getPIDCpuTime(pid)
         time.sleep(1)
@@ -265,6 +269,26 @@ class AndroidUtil(object):
             log.log_e('get current activity failure' + e.message)
             return ''
 
+    @staticmethod
+    def process_alive(package_name):
+        try:
+            cmd = 'ps | findStr %s' % package_name
+            process_result = AdbUtil.exec_adb_shell(cmd)
+            if process_result is None or process_result == '':
+                return False
+            process_result = process_result.split('\r\n')
+            # 假如有两个值，我们认为是存活的，一个进程本身，一个push进程（不考虑多个push进程的情况）
+            if len(process_result) > 1:
+                return True
+            # 判断是否是push进程
+            if len(process_result) == 1:
+                if package_name + ':' in process_result[0]:
+                    return False
+            return True
+        except Exception as e:
+            log.log_e('get process alive failure' + e.message)
+
 if __name__ == '__main__':
     print  AndroidUtil().get_cpu_data("com.xdja.safekeyservice")
 
+    print AndroidUtil.process_alive('com.xdja.actoma')

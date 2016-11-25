@@ -23,8 +23,9 @@ class GetFpsDataThread(threading.Thread):
     # 存放有问题的帧率数据
     fps_error_datas = [['frame_count', 'jank_count', 'fps', 'page', 'pic_name']]
 
-    def __init__(self, package_name):
+    def __init__(self, thread_id, package_name):
         threading.Thread.__init__(self)
+        self.threadId = thread_id
         self.package_name = package_name
         self.pic_name = 'fps'
         # 每次采集数据前，先清理上次的数据
