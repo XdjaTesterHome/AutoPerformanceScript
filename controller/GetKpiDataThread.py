@@ -42,6 +42,9 @@ class GetKpiDataThread(threading.Thread):
         self.threadID = thread_id
         self.package_name = package_name
         self.pic_name = 'kpi'
+        # 每次执行数据先清空之前的数据
+        GetKpiDataThread.clear_data()
+        GetKpiDataThread.task_finish = False
 
     """
         循环获取kpi数据的逻辑
@@ -128,7 +131,6 @@ class GetKpiDataThread(threading.Thread):
     def clear_data():
         GetKpiDataThread.kpi_datas = ['now_page', 'jump_page', 'cost_time']
         GetKpiDataThread.kpi_error_datas = [['now_page', 'jump_page', 'cost_time', 'pic_name']]
-        GetKpiDataThread.task_finish = False
 if __name__ == '__main__':
     kpi_thread = GetKpiDataThread(102, 'com.xdja.safekeyservice')
     kpi_thread.start()

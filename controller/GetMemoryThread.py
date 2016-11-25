@@ -30,6 +30,8 @@ class GetMemoryDataThread(threading.Thread):
     def __init__(self, thread_id):
         threading.Thread.__init__(self)
         self.threadId = thread_id
+        GetMemoryDataThread.task_finish = False
+        GetMemoryDataThread.clear_data()
 
     """
         采集内存数据的逻辑
@@ -60,7 +62,6 @@ class GetMemoryDataThread(threading.Thread):
     def clear_data():
         GetMemoryDataThread.Memorydata = []
         GetMemoryDataThread.Memoryerror = []
-        GetMemoryDataThread.task_finish = False
 
 if __name__ == '__main__':
     res = GetMemoryDataThread(1)

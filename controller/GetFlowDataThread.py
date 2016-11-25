@@ -40,6 +40,7 @@ class GetFlowDataThread(threading.Thread):
         self.pic_name = 'flow'
         # 每次开启线程，清理上次的数据
         GetFlowDataThread.clear_data()
+        GetFlowDataThread.task_finish = False
 
     """
         用于采集流量数据
@@ -55,7 +56,7 @@ class GetFlowDataThread(threading.Thread):
         # 死循环，满足条件后跳出
         exec_count = 0
         while True:
-            log.log_i('get flow data')
+            log.log_i('get flow data' + str(exec_count))
             # 判断执行了多少次
             if exec_count > config.collect_data_count:
                 break
@@ -84,7 +85,7 @@ class GetFlowDataThread(threading.Thread):
     def clear_data():
         GetFlowDataThread.flow_datas = []
         GetFlowDataThread.flow_error_datas = [['flow_data', 'current_page', 'pic_name']]
-        GetFlowDataThread.task_finish = False
+
 
 if __name__ == '__main__':
     for i in (0,1):

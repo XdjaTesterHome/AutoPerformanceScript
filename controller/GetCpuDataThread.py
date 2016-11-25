@@ -27,6 +27,8 @@ class GetCpuDataThread(threading.Thread):
     def __init__(self, thread_id):
         threading.Thread.__init__(self)
         self.threadId = thread_id
+        GetCpuDataThread.task_finish = False
+        GetCpuDataThread.clear_data()
 
     """
         获取cpu数据的逻辑
@@ -56,14 +58,10 @@ class GetCpuDataThread(threading.Thread):
     def clear_data():
         GetCpuDataThread.CPUdata  = []
         GetCpuDataThread.CPUerror = []
-        GetCpuDataThread.task_finish = False
+
 
 if __name__ == '__main__':
     res = GetCpuDataThread(1)
     res.start()
     res.join()#子线程执行完毕，才能执行主线程
     print res.CPUdata, res.CPUerror  #这个就是主线程
-
-
-    
-    

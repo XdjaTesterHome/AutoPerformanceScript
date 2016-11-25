@@ -34,6 +34,7 @@ class GetFpsDataThread(threading.Thread):
         self.pic_name = 'fps'
         # 每次采集数据前，先清理上次的数据
         GetFpsDataThread.clear_data()
+        GetFpsDataThread.task_finish = False
 
     """
         采集数据的逻辑
@@ -78,7 +79,7 @@ class GetFpsDataThread(threading.Thread):
     def clear_data():
         GetFpsDataThread.fps_datas = [['frame_count', 'jank_count', 'fps', 'page']]
         GetFpsDataThread.fps_error_datas = [['frame_count', 'jank_count', 'fps', 'page', 'pic_name']]
-        GetFpsDataThread.task_finish = False
+
 
 if __name__ == '__main__':
     GetFpsDataThread('com.xdja.safekeyservice').start()

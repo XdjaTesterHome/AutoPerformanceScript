@@ -3,6 +3,7 @@
 from CollectData import CollectData
 import common.GlobalConfig as config
 from controller.RunMonkeyThread import RunMonkeyThread
+from util.LogUtil import LogUtil
 
 __author__ = 'zhouliwei'
 
@@ -35,6 +36,11 @@ def main_entrance():
     while True:
         task_finish = CollectData.task_all_finish()
         if task_finish:
+            LogUtil.log_i('task finish')
+            LogUtil.log_i('begin record data')
+            # 6. 将数据记录下来
+            CollectData.record_data()
+
             # 任务完成
             print CollectData.flow_error_datas
             print CollectData.flow_datas
@@ -42,5 +48,5 @@ def main_entrance():
             print CollectData.fps_error_datas
             break
 
-    print 'performance data collect success'
+    LogUtil.log_i('performance data collect success')
 main_entrance()
