@@ -5,6 +5,7 @@ import  threading
 import time
 from util.AndroidUtil import AndroidUtil
 from util.AdbUtil import AdbUtil
+import common.GlobalConfig as gloab
 """
 function: 用于采集cpu数据的逻辑
 date:2016/11/23
@@ -29,8 +30,9 @@ class GetCpuDataThread(threading.Thread):
     """
     def run(self):
         i = 0
+        pkgName = gloab.test_package_name
         while i < self.times:
-            cpudata = AndroidUtil.get_cpu_data()#当前采集到的数据
+            cpudata = AndroidUtil.get_cpu_data(pkgName)#当前采集到的数据
             if cpudata >= 50.00:
                 cpuerror = cpudata
                 self.CPUerror.append(cpuerror)

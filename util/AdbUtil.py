@@ -30,13 +30,6 @@ class AdbUtil(object):
         results.close()
         return command_result
 
-    def getpid(self,package):
-        cmd = "adb shell ps |grep %s"%package
-        result = AdbUtil.exccmd(cmd)
-        pidl = result.split(" ")
-        pid =pidl[1]
-        return pid
-
 
 
     @staticmethod
@@ -183,6 +176,5 @@ class AdbUtil(object):
 
 
 if __name__ == '__main__':
-    a = AdbUtil()
-    print a.get_pid("com.xdja.safekeyservice")
+    print AdbUtil().get_pid("com.xdja.safekeyservice")
     pass

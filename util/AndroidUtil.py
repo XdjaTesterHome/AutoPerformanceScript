@@ -25,8 +25,8 @@ class AndroidUtil(object):
     """
         获取cpu数据  lzz，获取当前被监控的单个应用CPU的值
     """
-
-    def get_cpu_data(self,package):
+    @staticmethod
+    def get_cpu_data(package):
         #getTotalCpuTime获取总jiffies数据#
 
         def getTotalCpuTime():
@@ -42,7 +42,7 @@ class AndroidUtil(object):
             _result = re.findall(u'(\d+)', _result)
             _result = reduce(lambda x,y:x+y, [int(_result[11]),int(_result[12]),int(_result[13]),int(_result[14])]);
             return _result
-        pid= self.adbutil.get_pid(package)
+        pid= AdbUtil.get_pid(package)
         _start0 = getTotalCpuTime()
         _start1 = getPIDCpuTime(pid)
         time.sleep(1)
@@ -56,8 +56,8 @@ class AndroidUtil(object):
     """
         获取内存数据lzz,获取被监控应用内存的值：Dalvik Heap alloc的值，单位为kb
     """
-
-    def get_memory_data(self,pkgName):
+    @staticmethod
+    def get_memory_data(pkgName):
         try:
             allocMemory = "0"
             cmd_Memory = "adb shell dumpsys meminfo " + pkgName

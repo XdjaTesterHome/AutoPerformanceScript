@@ -13,6 +13,7 @@ date:2016/11/23
 """
 AdbUtil = AdbUtil()
 AndroidUtil = AndroidUtil()
+import common.GlobalConfig as gloab
 
 class GetMemoryDataThread(threading.Thread):
     
@@ -32,8 +33,9 @@ class GetMemoryDataThread(threading.Thread):
     """
     def run(self):
         i=0
+        pkgName = gloab.test_package_name
         while i < self.times:
-            memorydata = int(AndroidUtil.get_memory_data())#当前采集到的数据
+            memorydata = int(AndroidUtil.get_memory_data(pkgName))#当前采集到的数据
             if memorydata >= 50*1024:
                 memoryerror = memorydata
                 self.Memoryerror.append(memoryerror)
