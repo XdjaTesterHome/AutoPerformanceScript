@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 from CollectData import CollectData
 import common.GlobalConfig as config
-from monkey.Monkey import Monkey
+from controller.RunMonkeyThread import RunMonkeyThread
 
 __author__ = 'zhouliwei'
 
@@ -12,7 +12,7 @@ date:2016/11/25
 
 """
 
-run_monkey_count = 1000
+run_monkey_count = 100
 
 """
     程序的主入口
@@ -26,11 +26,12 @@ def main_entrance():
         print tip_message
         return
     # 2. 开启monkey
-    Monkey().run_monkey(run_monkey_count, config.test_package_name)
-    # 2. 开始采集数据的逻辑
+    monkey_thread = RunMonkeyThread(run_monkey_count, config.test_package_name)
+    monkey_thread.start()
+    # 3. 开始采集数据的逻辑
     CollectData().auto_collect_data()
 
-    # 3. 数据采集完成后,对采集到的数据处理并上报
+    # 4. 数据采集完成后,对采集到的数据处理并上报
     print CollectData.flow_error_datas
     print CollectData.flow_datas
     print CollectData.fps_datas

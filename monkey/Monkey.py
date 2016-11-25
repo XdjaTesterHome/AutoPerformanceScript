@@ -15,7 +15,7 @@ class Monkey(object):
     # run monkey,time为测试monkey时长，pkg为测试包
     @staticmethod
     def run_monkey(time, package_name):
-        cmd_memory = "adb shell monkey -p " + package_name + " --throttle 1000 --pct-appswitch 70 " + "--ignore-crashes --ignore-timeouts --ignore-native-crashes -v -v -v %s" % time
+        cmd_memory = "adb shell monkey -p " + package_name + " --throttle 500 --pct-appswitch 70 " + "--ignore-crashes --ignore-timeouts --ignore-native-crashes -v -v -v %s" % time
         monkey_run.exadb(cmd_memory)
 
 if __name__ == "__main__":

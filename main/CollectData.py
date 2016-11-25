@@ -70,6 +70,7 @@ class CollectData(object):
             flow_thread = GetFlowDataThread(self.FLOW_THREAD_ID, config.test_package_name)
             flow_thread.start()
 
+            LogUtil.log_i('begin record data')
             # 6. 将数据记录下来
             CollectData.record_data()
         except Exception as e:

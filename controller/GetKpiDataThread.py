@@ -71,7 +71,7 @@ class GetKpiDataThread(threading.Thread):
 
         # 这里的逻辑是采集一定时间的数据之后，结束进程
         while True:
-
+            log.log_i('get kpi data')
             # 1. 根据时间判断是否结束
             now_time = time.mktime(time.localtime())
             if now_time - start_time > config.collect_data_time:

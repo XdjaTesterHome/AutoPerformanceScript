@@ -5,6 +5,7 @@ import time
 import common.GlobalConfig as config
 from util.AndroidUtil import AndroidUtil
 from util.AdbUtil import AdbUtil
+from util.LogUtil import LogUtil as log
 
 __author__ = 'zhouliwei'
 
@@ -48,6 +49,7 @@ class GetFpsDataThread(threading.Thread):
         # 死循环，满足条件后跳出
         exec_count = 0
         while True:
+            log.log_i('get fps data')
             # 判断执行了多少次
             if exec_count > config.collect_data_count:
                 break
