@@ -4,7 +4,7 @@ from CollectData import CollectData
 import common.GlobalConfig as config
 from controller.RunMonkeyThread import RunMonkeyThread
 from util.LogUtil import LogUtil
-
+import time
 __author__ = 'zhouliwei'
 
 """
@@ -33,9 +33,10 @@ def main_entrance():
     CollectData().auto_collect_data()
 
     # 4. 数据采集完成后,对采集到的数据处理并上报
+    retry_count = 0
     while True:
         task_finish = CollectData.task_all_finish()
-        if task_finish:
+        if task_finish or retry_count > config.retry_count:
             LogUtil.log_i('task finish')
             LogUtil.log_i('begin record data')
             # 6. 将数据记录下来
@@ -47,6 +48,7 @@ def main_entrance():
             print CollectData.fps_datas
             print CollectData.fps_error_datas
             break
-
+        time.sleep(config.collect_data_interval)
+        retry_count += 1
     LogUtil.log_i('performance data collect success')
 main_entrance()

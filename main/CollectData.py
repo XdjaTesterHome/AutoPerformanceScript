@@ -70,6 +70,7 @@ class CollectData(object):
             flow_thread = GetFlowDataThread(self.FLOW_THREAD_ID, config.test_package_name)
             flow_thread.start()
 
+            LogUtil.log_i('All thread worked!!')
         except Exception as e:
             LogUtil.log_e('collect data failure ' + e.message)
 
@@ -83,6 +84,18 @@ class CollectData(object):
         kpi_task = GetKpiDataThread.task_finish
         cpu_task = GetCpuDataThread.task_finish
         memory_task = GetMemoryDataThread.task_finish
+        if flow_task:
+            print 'flow_task true'
+
+        if fps_task:
+            print 'fps_task true'
+
+        if kpi_task:
+            print 'kpi_task true'
+        if cpu_task:
+            print 'cpu_task true'
+        if memory_task:
+            print 'memory_task true'
         return flow_task and fps_task and kpi_task and cpu_task and memory_task
     """
         将采集到的数据记录下来

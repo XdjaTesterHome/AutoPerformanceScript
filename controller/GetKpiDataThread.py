@@ -122,7 +122,6 @@ class GetKpiDataThread(threading.Thread):
                 handle_error_data()
 
         GetKpiDataThread.task_finish = True
-        print GetKpiDataThread.kpi_datas
 
     """
         用于清理数据

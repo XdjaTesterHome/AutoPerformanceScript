@@ -6,6 +6,8 @@ import  threading
 import time
 from util.AndroidUtil import AndroidUtil
 from util.AdbUtil import AdbUtil
+import common.GlobalConfig as config
+from util.LogUtil import LogUtil
 """
 function: 采集内存数据的逻辑
 date:2016/11/23
@@ -13,7 +15,7 @@ date:2016/11/23
 """
 AdbUtil = AdbUtil()
 AndroidUtil = AndroidUtil()
-import common.GlobalConfig as gloab
+
 
 class GetMemoryDataThread(threading.Thread):
     
@@ -38,8 +40,9 @@ class GetMemoryDataThread(threading.Thread):
     """
     def run(self):
         i=0
-        pkgName = gloab.test_package_name
-        while i < self.times:
+        pkgName = config.test_package_name
+        while i < config.collect_data_count:
+            LogUtil.log_i('Inspect memory')
             memorydata = int(AndroidUtil.get_memory_data(pkgName))#当前采集到的数据
             if memorydata >= 50*1024:
                 memoryerror = memorydata
@@ -53,6 +56,7 @@ class GetMemoryDataThread(threading.Thread):
 
         GetMemoryDataThread.task_finish = True
         print self.Memoryerror, self.Memorydata
+        LogUtil.log_i('Inspect memory finish')
 
     """
         用于清理数据
@@ -65,6 +69,6 @@ class GetMemoryDataThread(threading.Thread):
 
 if __name__ == '__main__':
     res = GetMemoryDataThread(1)
-    print res.start()
-    res.join()#子线程执行完毕，才能执行主线程
-    print res.Memorydata, res.Memoryerror  #这个就是主线程
+    res.start()
+    # res.join()#子线程执行完毕，才能执行主线程
+    # print res.Memorydata, res.Memoryerror  #这个就是主线程

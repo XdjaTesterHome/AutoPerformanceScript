@@ -70,7 +70,6 @@ class GetFpsDataThread(threading.Thread):
             # 采集数据时间间隔
             time.sleep(config.collect_data_interval)
         GetFpsDataThread.task_finish = True
-        print GetFpsDataThread.fps_datas
 
     """
         用于清理数据

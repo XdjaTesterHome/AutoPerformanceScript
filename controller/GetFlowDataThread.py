@@ -76,7 +76,6 @@ class GetFlowDataThread(threading.Thread):
             time.sleep(config.collect_data_interval)
 
         GetFlowDataThread.task_finish = True
-        print GetFlowDataThread.flow_datas
 
     """
         清理数据
