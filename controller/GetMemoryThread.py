@@ -44,14 +44,15 @@ class GetMemoryDataThread(threading.Thread):
         while i < config.collect_data_count:
             LogUtil.log_i('Inspect memory')
             memorydata = int(AndroidUtil.get_memory_data(pkgName))#当前采集到的数据
+            LogUtil.log_i('Inspect memory 11')
             if memorydata >= 50*1024:
                 memoryerror = memorydata
                 self.Memoryerror.append(memoryerror)
                 AdbUtil.screenshot()
-            else:
-                pass
+                LogUtil.log_i('Inspect memory 12')
+            LogUtil.log_i('Inspect memory 13')
             self.Memorydata.append(memorydata)
-            # time.sleep(self.interval)#设定多久采集一次数据
+            time.sleep(config.collect_data_interval)#设定多久采集一次数据
             i += 1
 
         GetMemoryDataThread.task_finish = True
@@ -68,7 +69,7 @@ class GetMemoryDataThread(threading.Thread):
         GetMemoryDataThread.Memoryerror = []
 
 if __name__ == '__main__':
-    res = GetMemoryDataThread(1)
-    res.start()
+    memory_thread = GetMemoryDataThread(2)
+    memory_thread.start()
     # res.join()#子线程执行完毕，才能执行主线程
     # print res.Memorydata, res.Memoryerror  #这个就是主线程
