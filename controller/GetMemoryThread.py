@@ -23,7 +23,10 @@ class GetMemoryDataThread(threading.Thread):
     interval = cycletime/times#收集1次所需要的时间，单位为s
     Memorydata=[]#用于收集所有的内存数据
     Memoryerror=[]#用于手机内存占用过高的数据。
-    
+
+    # 任务是否完成
+    task_finish = False
+
     def __init__(self, thread_id):
         threading.Thread.__init__(self)
         self.threadId = thread_id
@@ -45,8 +48,19 @@ class GetMemoryDataThread(threading.Thread):
             self.Memorydata.append(memorydata)
             # time.sleep(self.interval)#设定多久采集一次数据
             i += 1
+
+        GetMemoryDataThread.task_finish = True
         print self.Memoryerror, self.Memorydata
-        pass
+
+    """
+        用于清理数据
+    """
+
+    @staticmethod
+    def clear_data():
+        GetMemoryDataThread.Memorydata = []
+        GetMemoryDataThread.Memoryerror = []
+        GetMemoryDataThread.task_finish = False
 
 if __name__ == '__main__':
     res = GetMemoryDataThread(1)

@@ -77,6 +77,17 @@ class CollectData(object):
             LogUtil.log_e('collect data failure ' + e.message)
 
     """
+        判断任务是否执行完成
+    """
+    @staticmethod
+    def task_all_finish():
+        flow_task = GetFlowDataThread.task_finish
+        fps_task = GetFpsDataThread.task_finish
+        kpi_task = GetKpiDataThread.task_finish
+        cpu_task = GetCpuDataThread.task_finish
+        memory_task = GetMemoryDataThread.task_finish
+        return flow_task and fps_task and kpi_task and cpu_task and memory_task
+    """
         将采集到的数据记录下来
     """
     @staticmethod

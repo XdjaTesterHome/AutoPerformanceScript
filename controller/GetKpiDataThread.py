@@ -6,6 +6,7 @@ import subprocess
 import common.GlobalConfig as config
 from util.LogUtil import LogUtil as log
 from util.AdbUtil import AdbUtil
+import re
 
 __author__ = 'zhouliwei'
 
@@ -33,6 +34,9 @@ class GetKpiDataThread(threading.Thread):
     # 跳转花费时间
     cost_time = ''
 
+    # 任务是否执行完成
+    task_finish = False
+
     def __init__(self, thread_id, package_name):
         threading.Thread.__init__(self)
         self.threadID = thread_id
@@ -46,18 +50,23 @@ class GetKpiDataThread(threading.Thread):
     def run(self):
         # 处理异常的kpi数据,当跳转时间大于3s（暂定）
         def handle_error_data():
-            cost_time_value = handle_cost_time(self.cost_time)
-            if cost_time_value > 3000:
-                AdbUtil.screenshot(self.pic_name)
-                GetKpiDataThread.kpi_error_datas.append([self.now_page_name, self.jump_page, self.cost_time, self.pic_name])
+            if self.cost_time != '' and self.cost_time is not None:
+                cost_time_value = handle_cost_time(self.cost_time)
+                if cost_time_value > 3000:
+                    AdbUtil.screenshot(self.pic_name)
+                    GetKpiDataThread.kpi_error_datas.append([self.now_page_name, self.jump_page, self.cost_time, self.pic_name])
 
         # 因为从日志中得到的值都是 +345ms 或者 +1s234ms
         def handle_cost_time(cost_time):
+            s_data = 0
+            ms_data = 0
             s_result = re.findall(r'\ds', cost_time)
+            if len(s_result) > 0:
+                s_data = int(s_result[0].split('s')[0]) * 1000
             ms_result = re.findall(r'\d\d\dms', cost_time)
+            if len(ms_result) > 0:
+                ms_data = int(ms_result[0].split('ms')[0])
 
-            s_data = int(s_result[0].split('s')[0]) * 1000
-            ms_data = int(ms_result[0].split('ms')[0])
             return s_data + ms_data
 
         # 记录起始时间
@@ -92,7 +101,7 @@ class GetKpiDataThread(threading.Thread):
                         self.jump_page = 'unknow'
                         self.cost_time = 0
                     else:
-                        self.jump_page = result[0]
+                        self.jump_page = result[0].split('/')[1]
                         self.cost_time = result[1]
 
             # 2. 获取从哪个页面跳转
@@ -100,7 +109,7 @@ class GetKpiDataThread(threading.Thread):
                 now_page = data.split('Moving to STOPPED:')
                 now_page = now_page[1].strip().split(' ')
                 if len(now_page) > 3:
-                    self.now_page_name = now_page[2]
+                    self.now_page_name = now_page[2].split('/')[1]
                 else:
                     self.now_page_name = 'unknow'
 
@@ -109,6 +118,7 @@ class GetKpiDataThread(threading.Thread):
                 GetKpiDataThread.kpi_datas.append([self.now_page_name, self.jump_page, self.cost_time])
                 handle_error_data()
 
+        GetKpiDataThread.task_finish = True
         print GetKpiDataThread.kpi_datas
 
     """
@@ -118,17 +128,7 @@ class GetKpiDataThread(threading.Thread):
     def clear_data():
         GetKpiDataThread.kpi_datas = ['now_page', 'jump_page', 'cost_time']
         GetKpiDataThread.kpi_error_datas = [['now_page', 'jump_page', 'cost_time', 'pic_name']]
-
-
+        GetKpiDataThread.task_finish = False
 if __name__ == '__main__':
-    # GetKpiDataThread(101, 'com.xdja.safekeyservice').start()
-
-    import re
-    str = '+1s435ms'
-    s_result = re.findall(r'\ds', str)
-    ms_result  = re.findall(r'\d\d\dms', str)
-
-    s_data = int(s_result[0].split('s')[0]) * 1000
-    ms_data = int(ms_result[0].split('ms')[0])
-    print s_data
-    print ms_data
+    kpi_thread = GetKpiDataThread(102, 'com.xdja.safekeyservice')
+    kpi_thread.start()

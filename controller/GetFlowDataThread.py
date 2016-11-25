@@ -30,6 +30,9 @@ class GetFlowDataThread(threading.Thread):
     # 用于存放采集到的有问题的流量数据
     flow_error_datas = [['flow_data', 'current_page', 'pic_name']]
 
+    # 任务是否完成
+    task_finish = False
+
     def __init__(self, thread_id, package_name):
         threading.Thread.__init__(self)
         self.threadId = thread_id
@@ -70,6 +73,8 @@ class GetFlowDataThread(threading.Thread):
 
             # 时间间隔
             time.sleep(config.collect_data_interval)
+
+        GetFlowDataThread.task_finish = True
         print GetFlowDataThread.flow_datas
 
     """
@@ -79,6 +84,7 @@ class GetFlowDataThread(threading.Thread):
     def clear_data():
         GetFlowDataThread.flow_datas = []
         GetFlowDataThread.flow_error_datas = [['flow_data', 'current_page', 'pic_name']]
+        GetFlowDataThread.task_finish = False
 
 if __name__ == '__main__':
     for i in (0,1):

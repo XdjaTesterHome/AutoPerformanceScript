@@ -24,6 +24,9 @@ class GetFpsDataThread(threading.Thread):
     # 存放有问题的帧率数据
     fps_error_datas = [['frame_count', 'jank_count', 'fps', 'page', 'pic_name']]
 
+    # 任务是否完成
+    task_finish = False
+
     def __init__(self, thread_id, package_name):
         threading.Thread.__init__(self)
         self.threadId = thread_id
@@ -44,7 +47,7 @@ class GetFpsDataThread(threading.Thread):
                 AdbUtil.screenshot(self.pic_name)
                 # 保存日志
 
-                GetFpsDataThread.fps_error_datas.append([frame_count, jank_count, fps, current_page, pic_name])
+                GetFpsDataThread.fps_error_datas.append([frame_count, jank_count, fps, current_page, self.pic_name])
 
         # 死循环，满足条件后跳出
         exec_count = 0
@@ -60,11 +63,12 @@ class GetFpsDataThread(threading.Thread):
             GetFpsDataThread.fps_datas.append([frame_count, jank_count, fps, current_page])
 
             # 处理有问题的数据
-            handle_error_data(frame_count, jank_count, fps)
+            handle_error_data(frame_count, jank_count, fps, current_page)
             exec_count += 1
 
             # 采集数据时间间隔
             time.sleep(config.collect_data_interval)
+        GetFpsDataThread.task_finish = True
         print GetFpsDataThread.fps_datas
 
     """
@@ -74,6 +78,7 @@ class GetFpsDataThread(threading.Thread):
     def clear_data():
         GetFpsDataThread.fps_datas = [['frame_count', 'jank_count', 'fps', 'page']]
         GetFpsDataThread.fps_error_datas = [['frame_count', 'jank_count', 'fps', 'page', 'pic_name']]
+        GetFpsDataThread.task_finish = False
 
 if __name__ == '__main__':
     GetFpsDataThread('com.xdja.safekeyservice').start()

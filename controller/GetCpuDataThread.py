@@ -20,7 +20,10 @@ class GetCpuDataThread(threading.Thread):
     interval = cycletime/times#收集1次所需要的时间，单位为s
     CPUdata=[]#用于收集所有的CPU数据
     CPUerror=[]#用于手机CPU占用过高的数据。
- 
+
+    # 任务是否完成
+    task_finish = False
+
     def __init__(self, thread_id):
         threading.Thread.__init__(self)
         self.threadId = thread_id
@@ -43,8 +46,18 @@ class GetCpuDataThread(threading.Thread):
             time.sleep(self.interval)#设定多久采集一次数据
             i += 1
         print self.CPUerror, self.CPUdata
-        pass
-    
+        GetCpuDataThread.task_finish = True
+
+    """
+        用于清理数据
+    """
+
+    @staticmethod
+    def clear_data():
+        GetCpuDataThread.CPUdata  = []
+        GetCpuDataThread.CPUerror = []
+        GetCpuDataThread.task_finish = False
+
 if __name__ == '__main__':
     res = GetCpuDataThread(1)
     res.start()

@@ -26,16 +26,21 @@ def main_entrance():
         print tip_message
         return
     # 2. 开启monkey
-    monkey_thread = RunMonkeyThread(run_monkey_count, config.test_package_name)
+    monkey_thread = RunMonkeyThread(config.test_package_name, run_monkey_count)
     monkey_thread.start()
     # 3. 开始采集数据的逻辑
     CollectData().auto_collect_data()
 
     # 4. 数据采集完成后,对采集到的数据处理并上报
-    print CollectData.flow_error_datas
-    print CollectData.flow_datas
-    print CollectData.fps_datas
-    print CollectData.fps_error_datas
-    print 'performance data collect success'
+    while True:
+        task_finish = CollectData.task_all_finish()
+        if task_finish:
+            # 任务完成
+            print CollectData.flow_error_datas
+            print CollectData.flow_datas
+            print CollectData.fps_datas
+            print CollectData.fps_error_datas
+            break
 
+    print 'performance data collect success'
 main_entrance()
