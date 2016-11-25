@@ -13,6 +13,7 @@ date:2016/11/22
 import os,time
 import subprocess,re
 import AdbUtil
+adbutil = AdbUtil.AdbUtil()
 class AndroidUtil(object):
     def __init__(self):
         pass
@@ -37,7 +38,7 @@ class AndroidUtil(object):
             _result = re.findall(u'(\d+)', _result)
             _result = reduce(lambda x,y:x+y, [int(_result[11]),int(_result[12]),int(_result[13]),int(_result[14])]);
             return _result
-        pid= AdbUtil().
+        pid= adbutil.get_pid(package)
         _start0 = getTotalCpuTime()
         _start1 = getPIDCpuTime(pid)
         time.sleep(1)
@@ -265,5 +266,5 @@ class AndroidUtil(object):
             return ''
 
 if __name__ == '__main__':
-    print  AndroidUtil().get_memory_data("com.xdja.safekeyservice")
+    print  AndroidUtil().get_cpu_data("com.xdja.safekeyservice")
 
