@@ -43,7 +43,7 @@ class GetMemoryDataThread(threading.Thread):
             self.Memorydata.append(memorydata)
             # time.sleep(self.interval)#设定多久采集一次数据
             i += 1
-        return self.Memoryerror, self.Memorydata
+        print self.Memoryerror, self.Memorydata
         pass
 
 if __name__ == '__main__':

@@ -12,7 +12,7 @@ date:2016/11/22
 """
 import os,time
 import subprocess,re
-
+import AdbUtil
 class AndroidUtil(object):
     def __init__(self):
         pass
@@ -21,13 +21,7 @@ class AndroidUtil(object):
         获取cpu数据  lzz，获取当前被监控的单个应用CPU的值
     """
 
-    def get_cpu_data(self):
-        #getCurrentPID:获取当前应用包名和Pid#
-        def getCurrentPID():
-            _result = os.popen('adb shell dumpsys activity top | findstr ACTIVITY').read().strip()
-            _resultPid = re.findall(u'pid=(\d+)', _result)[0]
-            _resultPName = re.findall(u'(com.\w+.\w+)',_result)[0]
-            return [_resultPid,_resultPName]
+    def get_cpu_data(self,package):
         #getTotalCpuTime获取总jiffies数据#
 
         def getTotalCpuTime():
@@ -43,7 +37,7 @@ class AndroidUtil(object):
             _result = re.findall(u'(\d+)', _result)
             _result = reduce(lambda x,y:x+y, [int(_result[11]),int(_result[12]),int(_result[13]),int(_result[14])]);
             return _result
-        pid,pName = getCurrentPID()
+        pid= AdbUtil().
         _start0 = getTotalCpuTime()
         _start1 = getPIDCpuTime(pid)
         time.sleep(1)
@@ -58,33 +52,22 @@ class AndroidUtil(object):
         获取内存数据lzz,获取被监控应用内存的值：Dalvik Heap alloc的值，单位为kb
     """
 
-    def get_memory_data(self):
-        #getCurrentPID:获取当前应用包名和Pid#
-        def getCurrentPID():
-            _result = os.popen('adb shell dumpsys activity top | findstr ACTIVITY').read().strip()
-            _resultPid = re.findall(u'pid=(\d+)', _result)[0]
-            _resultPName = re.findall(u'(com.\w+.\w+)',_result)[0]
-            return [_resultPid,_resultPName]
-        #readMemory采集应用Dalvik Heap alloc的值，单位为kb#
-        def readMemory(pkgName):
-            try:
-                allocMemory = "0"
-                cmd_Memory = "adb shell dumpsys meminfo " + pkgName
-                cmdResult = subprocess.check_output(cmd_Memory,shell=True) 
-                Result = re.search('.*(Dalvik Heap.*)',cmdResult,re.MULTILINE)
-                if Result is not None:
-                    res = Result.group()
-                    res = res.split()
-                    allocMemory = res[7]
-            except Exception, e:
-                print traceback.format_exc()
-            finally:
-                pass
-            return allocMemory
-        pid,pName = getCurrentPID()
-        allocMemory=readMemory(pName)
+    def get_memory_data(self,pkgName):
+        try:
+            allocMemory = "0"
+            cmd_Memory = "adb shell dumpsys meminfo " + pkgName
+            cmdResult = subprocess.check_output(cmd_Memory,shell=True)
+            Result = re.search('.*(Dalvik Heap.*)',cmdResult,re.MULTILINE)
+            if Result is not None:
+                res = Result.group()
+                res = res.split()
+                allocMemory = res[7]
+        except Exception, e:
+            print traceback.format_exc()
+        finally:
+            pass
         return allocMemory
-        pass
+
 
     """
         获取帧率数据
@@ -282,5 +265,5 @@ class AndroidUtil(object):
             return ''
 
 if __name__ == '__main__':
+    print  AndroidUtil().get_memory_data("com.xdja.safekeyservice")
 
-    print AndroidUtil.get_cur_activity()

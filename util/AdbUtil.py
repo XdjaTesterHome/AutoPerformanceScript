@@ -30,6 +30,15 @@ class AdbUtil(object):
         results.close()
         return command_result
 
+    def getpid(self,package):
+        cmd = "adb shell ps |grep %s"%package
+        result = AdbUtil.exccmd(cmd)
+        pidl = result.split(" ")
+        pid =pidl[1]
+        return pid
+
+
+
     @staticmethod
     def exec_adb(commands):
         command_result = ''
@@ -75,7 +84,7 @@ class AdbUtil(object):
     """
         接收cmd命令输出的结果，lzz
     """
-    def exccmd(cmd):
+    def exccmd(self,cmd):
         try:
             return os.popen(cmd).read()
         except Exception:
@@ -132,6 +141,13 @@ class AdbUtil(object):
         else:
             return False
 
+    #获取当前应用pid和包名#
+    def getCurrentPID():
+        _result = os.popen('adb shell dumpsys activity top | findstr ACTIVITY').read().strip()
+        _resultPid = re.findall(u'pid=(\d+)', _result)[0]
+        _resultPName = re.findall(u'(com.\w+.\w+)',_result)[0]
+        return [_resultPid,_resultPName]
+
     """
         获取应用的pid
     """
@@ -167,4 +183,6 @@ class AdbUtil(object):
 
 
 if __name__ == '__main__':
+    a = AdbUtil()
+    print a.get_pid("com.xdja.safekeyservice")
     pass

@@ -40,7 +40,7 @@ class GetCpuDataThread(threading.Thread):
             self.CPUdata.append(cpudata)
             time.sleep(self.interval)#设定多久采集一次数据
             i += 1
-        return self.CPUerror, self.CPUdata
+        print self.CPUerror, self.CPUdata
         pass
     
 if __name__ == '__main__':
