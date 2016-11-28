@@ -58,8 +58,9 @@ class AndroidUtil(object):
     """
     @staticmethod
     def get_memory_data(pkgName):
+        allocMemory = "0"
         try:
-            allocMemory = "0"
+
             cmd_Memory = "adb shell dumpsys meminfo " + pkgName
             cmdResult = subprocess.check_output(cmd_Memory,shell=True)
             Result = re.search('.*(Dalvik Heap.*)',cmdResult,re.MULTILINE)

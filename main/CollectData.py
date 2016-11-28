@@ -57,7 +57,6 @@ class CollectData(object):
             # 2. 开始采集内存数据
             memory_thread = GetMemoryDataThread(self.MEMORY_THREAD_ID)
             memory_thread.start()
-
             # 3. 开始采集cpu数据
             cpu_thread = GetCpuDataThread(self.CPU_THREAD_ID)
             cpu_thread.start()

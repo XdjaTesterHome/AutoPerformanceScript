@@ -29,6 +29,7 @@ def main_entrance():
     # 2. 开启monkey
     monkey_thread = RunMonkeyThread(config.test_package_name, run_monkey_count)
     monkey_thread.start()
+
     # 3. 开始采集数据的逻辑
     CollectData().auto_collect_data()
 
@@ -39,7 +40,7 @@ def main_entrance():
         if task_finish or retry_count > config.retry_count:
             LogUtil.log_i('task finish')
             LogUtil.log_i('begin record data')
-            # 6. 将数据记录下来
+            # 5. 将数据记录下来
             CollectData.record_data()
 
             # 任务完成
