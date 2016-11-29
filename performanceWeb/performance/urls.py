@@ -22,5 +22,6 @@ from . import views as performance_views
 
 urlpatterns = [
     url(r'^$', performance_views.home, name='home'),
+    url(r'^base/', performance_views.index, name='base'),
     url(r'^admin/', admin.site.urls),
 ]

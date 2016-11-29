@@ -28,3 +28,4 @@ class RunMonkeyThread(threading.Thread):
         log.log_i('begin exec monkey')
         Monkey.run_monkey(self.time, self.package_name)
         log.log_i('monkey exec success')
+
