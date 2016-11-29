@@ -50,6 +50,7 @@ class CollectData(object):
 
     def auto_collect_data(self):
         try:
+            # 这里同时启动多个线程，会有问题，后面解决
             # 1. 开始采集kpi数据
             kpi_thread = GetKpiDataThread(self.KPI_THREAD_ID, config.test_package_name)
             kpi_thread.start()
