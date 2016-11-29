@@ -100,8 +100,14 @@ class AndroidUtil(object):
         def handle_fps_result(x):
             # 截取 【Profile data in ms:】之后的数据
             first_result = re.findall(r'Profile.*hierarchy', x, re.DOTALL)
+            if len(first_result) < 1:
+                return None
             activity_name = re.findall(r'(com.*)/.*@', first_result[0])
             data = re.findall(r'Execute(.*?)\r\n\r\n', first_result[0], re.DOTALL)
+
+            if len(data) < 1:
+                return None
+
             if len(data) > 1:
                 result = data[1].strip().split('\r\n\t')
             else:
@@ -113,6 +119,8 @@ class AndroidUtil(object):
             cmd = 'dumpsys gfxinfo %s' % pkg_name
             fps_result = AdbUtil.exec_adb_shell(cmd)
             fps_result = handle_fps_result(fps_result)
+            if fps_result is None or len(fps_result) < 1 :
+                return None, None, None
             # 得到的fps_result中是包含\t的。
             frames = [frame for frame in fps_result if validator(frame)]
 
