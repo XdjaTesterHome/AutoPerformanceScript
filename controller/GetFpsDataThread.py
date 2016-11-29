@@ -18,11 +18,11 @@ date:2016/11/24
 
 class GetFpsDataThread(threading.Thread):
 
-    # 存放采集到的帧率数据
-    fps_datas = [['frame_count', 'jank_count', 'fps', 'page']]
+    # 存放采集到的帧率数据['frame_count', 'jank_count', 'fps', 'page']
+    fps_datas = []
 
-    # 存放有问题的帧率数据
-    fps_error_datas = [['frame_count', 'jank_count', 'fps', 'page', 'pic_name']]
+    # 存放有问题的帧率数据['frame_count', 'jank_count', 'fps', 'page', 'pic_name']
+    fps_error_datas = []
 
     # 任务是否完成
     task_finish = False
@@ -60,6 +60,9 @@ class GetFpsDataThread(threading.Thread):
 
             # 采集数据
             frame_count, jank_count, fps = AndroidUtil.get_fps_data_by_gfxinfo(self.package_name)
+            if frame_count is None and jank_count is None and fps is None:
+                exec_count += 1
+                continue
             current_page = AndroidUtil.get_cur_activity()
             GetFpsDataThread.fps_datas.append([frame_count, jank_count, fps, current_page])
 
@@ -76,8 +79,8 @@ class GetFpsDataThread(threading.Thread):
     """
     @staticmethod
     def clear_data():
-        GetFpsDataThread.fps_datas = [['frame_count', 'jank_count', 'fps', 'page']]
-        GetFpsDataThread.fps_error_datas = [['frame_count', 'jank_count', 'fps', 'page', 'pic_name']]
+        GetFpsDataThread.fps_datas = []
+        GetFpsDataThread.fps_error_datas = []
 
 
 if __name__ == '__main__':
