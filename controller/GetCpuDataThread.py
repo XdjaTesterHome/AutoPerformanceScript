@@ -49,7 +49,7 @@ class GetCpuDataThread(threading.Thread):
             self.CPUdata.append(cpudata)
             time.sleep(config.collect_data_interval)#设定多久采集一次数据
             i += 1
-        print self.CPUerror, self.CPUdata
+        print "CPUerror:",self.CPUerror,"CPUdata:", self.CPUdata
         GetCpuDataThread.task_finish = True
         LogUtil.log_i('Inspect cpu finish')
 
